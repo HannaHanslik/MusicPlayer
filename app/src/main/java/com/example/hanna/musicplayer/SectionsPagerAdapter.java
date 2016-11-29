@@ -11,6 +11,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+    private ListFragment listFragment;
+    private PlayListFragment playListFragment;
+
     public SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -18,10 +21,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position == 0){
-            return ListFragment.newInstance(1);
+            listFragment  = ListFragment.newInstance(1);
+            return listFragment;
         }
         else{
-            return PlayListFragment.newInstance(1);
+            playListFragment = PlayListFragment.newInstance(1);
+            return playListFragment;
         }
     }
 
@@ -40,5 +45,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         }
         return null;
     }
+
+    public Fragment getPage( int position){
+        if(position == 0){
+            return listFragment;
+        }
+        else{
+            return playListFragment;
+        }
+    }
+
 }
 
