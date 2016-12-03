@@ -10,12 +10,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Hanna on 22.11.2016.
  */
 
 public class PlayListFragment extends ListFragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private ArrayList<Song> songs;
+    private ViewGroup rootView;
+    private DeviceSongs deviceSongs;
+
 
     public PlayListFragment() {
     }
@@ -35,29 +43,30 @@ public class PlayListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.playlist_fragment, container, false);
-        // Create an array of string to be data source of the ListFragment
-        String[] datasource = {"English", "French", "Khmer", "Japanese", "Russian", "Chinese", "English", "French", "Khmer", "Japanese", "Russian", "Chinese", "English", "French", "Khmer", "Japanese", "Russian", "Chinese", "English", "French", "Khmer", "Japanese", "Russian", "Chinese"};
-        // Create ArrayAdapter object to wrap the data source
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.rowlayout, R.id.txtitem, datasource);
-        // Bind adapter to the ListFragment
-        setListAdapter(adapter);
-        //  Retain the ListFragment instance across Activity re-creation
-        setRetainInstance(true);
+        rootView = (ViewGroup) inflater.inflate(R.layout.playlist_fragment, container, false);
+        deviceSongs = new DeviceSongs(getActivity());
         return rootView;
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        songs =deviceSongs.ListAllSongs();
+        SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
+        setListAdapter(songAdt);
+    }
+
+
+
+    @Override
     public void onListItemClick(ListView l, View view, int position, long id){
         ViewGroup viewg=(ViewGroup)view;
-        TextView tv=(TextView)viewg.findViewById(R.id.txtitem);
+        TextView tv=(TextView)viewg.findViewById(R.id.songTitle);
         Toast.makeText(getActivity(), tv.getText().toString(),Toast.LENGTH_LONG).show();
     }
 
     public void onPlayClick(View view){
-
         Toast.makeText(getActivity(),"Play!",Toast.LENGTH_LONG).show();
-
     }
 
 }
