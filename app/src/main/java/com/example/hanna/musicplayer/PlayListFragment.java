@@ -142,6 +142,7 @@ public class PlayListFragment extends ListFragment {
         Random generator = new Random();
         int i = generator.nextInt(songs.size());
 
+        currPlaySongID = i;
         Song currSong = songs.get(i);
         return currSong.getUrl();
     }
@@ -156,6 +157,18 @@ public class PlayListFragment extends ListFragment {
         songPlayer.stop();
     }
 
+    public int getCurrSongId(){
+        return currPlaySongID;
+    }
+
+    public int getCountSoundsInPlaylist(){
+        return songs.size();
+    }
+
+    public void updateButtons(){
+        songPlayer.setButtonsNextAndPrev();
+    }
+
     public void playNextSong(View v) { songPlayer.nextSong(); }
 
     public void playPrevSong(View v) { songPlayer.prevSong();}
@@ -163,9 +176,6 @@ public class PlayListFragment extends ListFragment {
     @Override
     public void onDestroy(){
         songPlayer.release();
-        /*if (songPlayer.isPlaying()) {
-            songPlayer.stop();
-        }*/
         songPlayer.destroyCallback();
         super.onDestroy();
     }

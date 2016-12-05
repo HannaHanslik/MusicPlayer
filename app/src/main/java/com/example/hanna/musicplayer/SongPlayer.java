@@ -46,6 +46,8 @@ public class SongPlayer extends MediaPlayer {
             setDataSource(path);
             prepare();
             start();
+            setButtonsToPlayMode();
+            setButtonsNextAndPrev();
 
             final SongPlayer thisSong = this;
             ProgressBar progressBar = (ProgressBar)mainActivity.findViewById(R.id.progressBarMusic);
@@ -86,6 +88,7 @@ public class SongPlayer extends MediaPlayer {
                     isSetTimer = true;
                 }
                 else{
+                    setButtonsToStopMode();
                     nextSong();
                 }
 
@@ -140,16 +143,62 @@ public class SongPlayer extends MediaPlayer {
         }
     }
 
+    private void setButtonsToPlayMode(){
+        mainActivity.findViewById(R.id.buttonPlay).setEnabled(false);
+        mainActivity.findViewById(R.id.buttonPause).setEnabled(true);
+        mainActivity.findViewById(R.id.buttonStop).setEnabled(true);
+    }
+
+    private void setButtonsToPauseMode(){
+        mainActivity.findViewById(R.id.buttonPlay).setEnabled(true);
+        mainActivity.findViewById(R.id.buttonPause).setEnabled(false);
+        mainActivity.findViewById(R.id.buttonStop).setEnabled(true);
+    }
+
+    private void setButtonsToStopMode(){
+        if (path!=null && this.getDuration()>0) {
+            mainActivity.findViewById(R.id.buttonPlay).setEnabled(true);
+        }
+        else{
+            mainActivity.findViewById(R.id.buttonPlay).setEnabled(false);
+        }
+        mainActivity.findViewById(R.id.buttonPause).setEnabled(false);
+        mainActivity.findViewById(R.id.buttonStop).setEnabled(false);
+    }
+
+    public void setButtonsNextAndPrev(){
+        boolean prevEnable, nextEnable;
+
+        if (getPlayingMode() != PlayingMode.RANDOM) {
+            int currID = mainActivity.getCurrentSongId();
+            int maxID = mainActivity.getCountSongs();
+
+            prevEnable = (currID == 0) ? false : true;
+            nextEnable = (currID + 1 != maxID) ? true : false;
+        }
+        else{
+            prevEnable = false;
+            nextEnable = true;
+        }
+
+        mainActivity.findViewById(R.id.buttonPrevious).setEnabled(prevEnable);
+        mainActivity.findViewById(R.id.buttonNext).setEnabled(nextEnable);
+    }
+
     @Override
     public void start(){
         if (!isPlaying()) {
             super.start();
+            if (path != null) {
+                setButtonsToPlayMode();
+            }
         }
     }
 
     @Override
     public void pause(){
         super.pause();
+        setButtonsToPauseMode();
     }
 
     @Override
@@ -164,5 +213,6 @@ public class SongPlayer extends MediaPlayer {
             this.seekTo(0);
             writeValues();
         }
+        setButtonsToStopMode();
     }
 }

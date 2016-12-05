@@ -2,7 +2,7 @@
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false"
-        android:drawable="@drawable/button_pause_pressed" />
+        android:drawable="@drawable/button_pause_disabled" />
     <item android:state_enabled="true"
         android:state_pressed="true" android:drawable="@drawable/button_pause_pressed" />
     <item android:state_enabled="true"

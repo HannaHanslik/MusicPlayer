@@ -91,9 +91,17 @@ public class MainActivity extends AppCompatActivity {
         return ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).getRandomUrlSong();
     }
 
+    public int getCountSongs(){
+        return ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).getCountSoundsInPlaylist();
+    }
+
+    public int getCurrentSongId(){
+        return ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).getCurrSongId();
+    }
+
     public void onToggle(View view) {
         ((RadioGroup)view.getParent()).check(view.getId());
-        // app specific stuff ..
+        ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).updateButtons();
     }
 
 }
