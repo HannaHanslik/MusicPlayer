@@ -1,5 +1,6 @@
 package com.example.hanna.musicplayer;
 
+import android.app.LauncherActivity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -102,7 +103,7 @@ public class PlayListFragment extends ListFragment {
                 if(songs!= null){
                     SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
                     setListAdapter(songAdt);
-                    Toast.makeText(getActivity(), "GET",Toast.LENGTH_LONG).show();
+
                 }
 
             }
@@ -123,7 +124,7 @@ public class PlayListFragment extends ListFragment {
     public void onListItemClick(ListView l, View view, int position, long id){
         ViewGroup viewg=(ViewGroup)view;
         TextView tv=(TextView)viewg.findViewById(R.id.songTitle);
-        Toast.makeText(getActivity(), tv.getText().toString(),Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), tv.getText().toString(),Toast.LENGTH_LONG).show();
 
         currPlaySongID = position;
         Song currSong = songs.get(position);
@@ -183,6 +184,10 @@ public class PlayListFragment extends ListFragment {
     public void playNextSong(View v) { songPlayer.nextSong(); }
 
     public void playPrevSong(View v) { songPlayer.prevSong();}
+
+    public void buttonDelClick(View v){
+        //Toast.makeText(getActivity(),"DEL",Toast.LENGTH_LONG).show();
+    }
 
     @Override
     public void onDestroy(){

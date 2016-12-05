@@ -26,7 +26,6 @@ public class ListFragment extends android.support.v4.app.ListFragment {
     private ArrayList<Song> selectedSongs;
     private ViewGroup rootView;
     private DeviceSongs deviceSongs;
-    private boolean first = true;
 
     OnListSendListener mCallback;
 
@@ -84,11 +83,10 @@ public class ListFragment extends android.support.v4.app.ListFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (this.isVisible()) {
-            if (!isVisibleToUser && !first) {
+            if (!isVisibleToUser) {
                 mCallback.onListSend(selectedSongs);
-                Toast.makeText(getActivity(), "SEND",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), "SEND",Toast.LENGTH_LONG).show();
             }
-            first = false;
         }
     }
 

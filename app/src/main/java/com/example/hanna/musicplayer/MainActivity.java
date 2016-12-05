@@ -1,8 +1,10 @@
 package com.example.hanna.musicplayer;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.LogWriter;
 import android.support.v7.app.AppCompatActivity;
@@ -23,17 +25,13 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements  ListFragment.OnListSendListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+    //<uses-permission android:name="android.permission.WRITE_SETTINGS" />    private SectionsPagerAdapter mSectionsPagerAdapter;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private PlayListSaver playListSaver;
 
     private ArrayList<Song>  playlist;
+    private final static String  PLAYLIST = "playlist";
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -53,7 +51,16 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.OnL
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        //playListSaver = new PlayListSaver(this);
+        //setAutoOrientationEnabled(this,false);
     }
+
+    /*public static void setAutoOrientationEnabled(Context context, boolean enabled)
+    {
+        Settings.System.putInt( context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enabled ? 1 : 0);
+    }*/
+
 
 
     public void buttonOnClickPlay(View v){
@@ -102,8 +109,13 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.OnL
         ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).updateButtons();
     }
 
+    public void buttonDelClick(View v){
+        ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).buttonDelClick(v);
+    }
+
     @Override
     public void onListSend(ArrayList<Song> playlist) {
+
         this.playlist = playlist;
     }
 

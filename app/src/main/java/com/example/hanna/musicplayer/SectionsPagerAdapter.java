@@ -28,7 +28,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if(position == 1){
+        if(position == 0){
             listFragment  = ListFragment.newInstance();
             return listFragment;
         }
@@ -46,16 +46,16 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
-            case 1:
-                return "List";
             case 0:
+                return "List";
+            case 1:
                 return "PlayList";
         }
         return null;
     }
 
     public Fragment getPage( int position){
-        if(position == 1){
+        if(position == 0){
             return listFragment;
         }
         else{
