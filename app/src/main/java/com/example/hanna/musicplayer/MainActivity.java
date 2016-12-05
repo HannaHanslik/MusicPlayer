@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private ArrayList<Song>  playlist;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -46,16 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-    }
-
-    public void onClickPlay(View view){
-        ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).onPlayClick(view);
-        DeviceSongs deviceSongs = new DeviceSongs(this);
     }
 
     public void buttonOnClickPlay(View v){

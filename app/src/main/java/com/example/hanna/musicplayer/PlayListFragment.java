@@ -26,7 +26,6 @@ import java.util.Random;
  */
 
 public class PlayListFragment extends ListFragment {
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
     private ArrayList<Song> songs;
     private ViewGroup rootView;
@@ -41,20 +40,27 @@ public class PlayListFragment extends ListFragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static PlayListFragment newInstance(int sectionNumber) {
+    public static PlayListFragment newInstance() {
         PlayListFragment fragment = new PlayListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+
+        songPlayer = new SongPlayer((MainActivity)getActivity());
+        songs = new ArrayList<Song>();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.playlist_fragment, container, false);
-        deviceSongs = new DeviceSongs(getActivity());
-        songPlayer = new SongPlayer((MainActivity)getActivity());
+        getSongsFromBoundle();
+        SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
+        setListAdapter(songAdt);
 
         final ProgressBar progressBarMusic = (ProgressBar)rootView.findViewById(R.id.progressBarMusic);
         progressBarMusic.setOnTouchListener(new View.OnTouchListener(){
@@ -79,18 +85,19 @@ public class PlayListFragment extends ListFragment {
             }
 
         });
-
         ((RadioGroup)rootView.findViewById(R.id.toggleGroup)).setOnCheckedChangeListener(ToggleListener);
-
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        songs =deviceSongs.ListAllSongs();
-        SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
-        setListAdapter(songAdt);
+    private void getSongsFromBoundle() {
+        ArrayList<String> titles = getArguments().getStringArrayList("titles");
+        ArrayList<String> performers= getArguments().getStringArrayList("performers");
+        ArrayList<String> urles = getArguments().getStringArrayList("urles");
+        if(titles!= null) {
+            for (int i = 0; i < titles.size(); i++) {
+                songs.add(new Song(urles.get(i), titles.get(i), performers.get(i)));
+            }
+        }
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.hanna.musicplayer;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +18,13 @@ import java.util.ArrayList;
  */
 
 public class ListFragment extends android.support.v4.app.ListFragment {
-    private static final String ARG_SECTION_NUMBER = "section_number";
 
     private ArrayList<Song> songs;
+    private ArrayList<Song> selectedSongs;
     private ViewGroup rootView;
     private DeviceSongs deviceSongs;
+    private boolean first = true;
 
-    private String error="";
 
 
     public ListFragment() {
@@ -33,12 +34,8 @@ public class ListFragment extends android.support.v4.app.ListFragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static ListFragment newInstance(int sectionNumber) {
-
+    public static ListFragment newInstance() {
         ListFragment fragment = new ListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -47,6 +44,7 @@ public class ListFragment extends android.support.v4.app.ListFragment {
                              Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.list_fragment, container, false);
         deviceSongs = new DeviceSongs(getActivity());
+        selectedSongs =  new ArrayList<Song>();
         return rootView;
     }
 
@@ -60,14 +58,48 @@ public class ListFragment extends android.support.v4.app.ListFragment {
         }
         catch (Exception ex)
         {
-            error = ex.getMessage();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // Make sure that we are currently visible
+        if (this.isVisible()) {
+            // If we are becoming invisible, then...
+            if (!isVisibleToUser && !first) {
+                Toast.makeText(getActivity(), "A jednak widoczny" ,Toast.LENGTH_LONG).show();
+                sendSongsInIntent();
+            }
+            first = false;
         }
     }
 
     public void onListItemClick(ListView l, View view, int position, long id){
+        selectedSongs.add(songs.get(position));
         ViewGroup viewg=(ViewGroup)view;
         TextView tv=(TextView)viewg.findViewById(R.id.songTitle);
-        Toast.makeText(getActivity(), tv.getText().toString(),Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Add to playlist" + tv.getText().toString(),Toast.LENGTH_LONG).show();
+    }
+
+    private void sendSongsInIntent() {
+        Toast.makeText(getActivity(), "Sending...",Toast.LENGTH_LONG).show();
+        ArrayList<String> titles = new ArrayList<>();
+        ArrayList<String> performers = new ArrayList<>();
+        ArrayList<String> urles = new ArrayList<>();
+        if(selectedSongs!=null) {
+            for (Song song : selectedSongs) {
+                titles.add(song.getTitle());
+                performers.add(song.getPerformer());
+                urles.add(song.getUrl());
+            }
+        }
+        Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
+        intent.putStringArrayListExtra("titles",titles);
+        intent.putStringArrayListExtra("performers",performers);
+        intent.putStringArrayListExtra("urles",urles);
+        getActivity().startActivity(intent);
     }
 
 }
