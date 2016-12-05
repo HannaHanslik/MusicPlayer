@@ -33,24 +33,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             return listFragment;
         }
         else{
-            Intent intent = activity.getIntent();
-            ArrayList<String> titles = intent.getStringArrayListExtra("titles");
-            ArrayList<String> performers = intent.getStringArrayListExtra("performers");
-            ArrayList<String> urles = intent.getStringArrayListExtra("urles");
-
-            //Set data to PlayListFragment
-            Bundle bundle=new Bundle();
-            if(titles!= null)
-            {
-                bundle.putStringArrayList("titles",titles);
-                bundle.putStringArrayList("performers",performers);
-                bundle.putStringArrayList("urles",urles);
-            }
-
-            if(playListFragment!= null)
-                playListFragment.onDestroy();
             playListFragment = PlayListFragment.newInstance();
-            playListFragment.setArguments(bundle);
             return playListFragment;
         }
     }

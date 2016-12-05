@@ -46,21 +46,20 @@ public class PlayListFragment extends ListFragment {
     }
 
     @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-
-        songPlayer = new SongPlayer((MainActivity)getActivity());
-        songs = new ArrayList<Song>();
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.playlist_fragment, container, false);
-        getSongsFromBoundle();
-        SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
-        setListAdapter(songAdt);
+        songs = ((MainActivity)getActivity()).getPlaylist();
+
+        //getSongsFromBoundle();
+        if(songs!= null){
+            SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
+            setListAdapter(songAdt);
+        }
+
+
+        songPlayer = new SongPlayer((MainActivity)getActivity());
+
 
         final ProgressBar progressBarMusic = (ProgressBar)rootView.findViewById(R.id.progressBarMusic);
         progressBarMusic.setOnTouchListener(new View.OnTouchListener(){
@@ -89,17 +88,26 @@ public class PlayListFragment extends ListFragment {
         return rootView;
     }
 
-    private void getSongsFromBoundle() {
-        ArrayList<String> titles = getArguments().getStringArrayList("titles");
-        ArrayList<String> performers= getArguments().getStringArrayList("performers");
-        ArrayList<String> urles = getArguments().getStringArrayList("urles");
-        if(titles!= null) {
-            for (int i = 0; i < titles.size(); i++) {
-                songs.add(new Song(urles.get(i), titles.get(i), performers.get(i)));
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // Make sure that we are currently visible
+        if (this.isVisible()) {
+            // If we are becoming invisible, then...
+            if (isVisibleToUser) {
+                songs = ((MainActivity)getActivity()).getPlaylist();
+
+                if(songs!= null){
+                    SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
+                    setListAdapter(songAdt);
+                    Toast.makeText(getActivity(), "GET",Toast.LENGTH_LONG).show();
+                }
+
             }
         }
     }
-
 
     static final RadioGroup.OnCheckedChangeListener ToggleListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
@@ -120,10 +128,6 @@ public class PlayListFragment extends ListFragment {
         currPlaySongID = position;
         Song currSong = songs.get(position);
         songPlayer.setSong(currSong.getUrl());
-    }
-
-    public void onPlayClick(View view){
-        Toast.makeText(getActivity(),"Play!",Toast.LENGTH_LONG).show();
     }
 
     public String getUrlNextSong(){

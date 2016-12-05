@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements  ListFragment.OnListSendListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
+
 
     public void buttonOnClickPlay(View v){
         ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).playOnClick(v);
@@ -101,4 +102,12 @@ public class MainActivity extends AppCompatActivity {
         ((PlayListFragment)mSectionsPagerAdapter.getPage(mViewPager.getCurrentItem())).updateButtons();
     }
 
+    @Override
+    public void onListSend(ArrayList<Song> playlist) {
+        this.playlist = playlist;
+    }
+
+    public ArrayList<Song> getPlaylist() {
+        return playlist;
+    }
 }

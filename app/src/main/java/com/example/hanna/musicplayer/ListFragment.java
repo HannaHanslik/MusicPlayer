@@ -1,8 +1,11 @@
 package com.example.hanna.musicplayer;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,22 @@ public class ListFragment extends android.support.v4.app.ListFragment {
     private DeviceSongs deviceSongs;
     private boolean first = true;
 
+    OnListSendListener mCallback;
+
+    public interface OnListSendListener{
+        void onListSend(ArrayList<Song> playlist);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallback = (OnListSendListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Interface playlist send exception");
+        }
+    }
 
 
     public ListFragment() {
@@ -64,13 +83,10 @@ public class ListFragment extends android.support.v4.app.ListFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-
-        // Make sure that we are currently visible
         if (this.isVisible()) {
-            // If we are becoming invisible, then...
             if (!isVisibleToUser && !first) {
-                Toast.makeText(getActivity(), "A jednak widoczny" ,Toast.LENGTH_LONG).show();
-                sendSongsInIntent();
+                mCallback.onListSend(selectedSongs);
+                Toast.makeText(getActivity(), "SEND",Toast.LENGTH_LONG).show();
             }
             first = false;
         }
@@ -80,26 +96,8 @@ public class ListFragment extends android.support.v4.app.ListFragment {
         selectedSongs.add(songs.get(position));
         ViewGroup viewg=(ViewGroup)view;
         TextView tv=(TextView)viewg.findViewById(R.id.songTitle);
-        Toast.makeText(getActivity(), "Add to playlist" + tv.getText().toString(),Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Add to playlist " + tv.getText().toString(),Toast.LENGTH_LONG).show();
     }
 
-    private void sendSongsInIntent() {
-        Toast.makeText(getActivity(), "Sending...",Toast.LENGTH_LONG).show();
-        ArrayList<String> titles = new ArrayList<>();
-        ArrayList<String> performers = new ArrayList<>();
-        ArrayList<String> urles = new ArrayList<>();
-        if(selectedSongs!=null) {
-            for (Song song : selectedSongs) {
-                titles.add(song.getTitle());
-                performers.add(song.getPerformer());
-                urles.add(song.getUrl());
-            }
-        }
-        Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
-        intent.putStringArrayListExtra("titles",titles);
-        intent.putStringArrayListExtra("performers",performers);
-        intent.putStringArrayListExtra("urles",urles);
-        getActivity().startActivity(intent);
-    }
 
 }
