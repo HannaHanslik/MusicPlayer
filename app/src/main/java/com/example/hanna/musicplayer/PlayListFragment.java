@@ -209,7 +209,7 @@ public class PlayListFragment extends ListFragment {
 
         String title = ((TextView) ((LinearLayout) v.getParent()).findViewById(R.id.songTitle)).getText().toString();
         int deletedSongID=0;
-        
+
         ArrayList<Song> newSongs = new ArrayList<>();
         int i =0;
         for (Song song : songs) {
