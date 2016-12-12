@@ -23,12 +23,10 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class MainActivity extends AppCompatActivity implements  ListFragment.OnListSendListener {
-
-    //<uses-permission android:name="android.permission.WRITE_SETTINGS" />    private SectionsPagerAdapter mSectionsPagerAdapter;
+public class MainActivity extends AppCompatActivity implements  ListFragment.OnListSendListener,PlayListFragment.OnListSendListener {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private PlayListSaver playListSaver;
+    //private PlayListSaver playListSaver;
 
     private ArrayList<Song>  playlist;
     private final static String  PLAYLIST = "playlist";
@@ -55,12 +53,6 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.OnL
         //playListSaver = new PlayListSaver(this);
         //setAutoOrientationEnabled(this,false);
     }
-
-    /*public static void setAutoOrientationEnabled(Context context, boolean enabled)
-    {
-        Settings.System.putInt( context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enabled ? 1 : 0);
-    }*/
-
 
 
     public void buttonOnClickPlay(View v){
@@ -115,11 +107,11 @@ public class MainActivity extends AppCompatActivity implements  ListFragment.OnL
 
     @Override
     public void onListSend(ArrayList<Song> playlist) {
-
         this.playlist = playlist;
     }
 
     public ArrayList<Song> getPlaylist() {
         return playlist;
     }
+
 }

@@ -16,7 +16,8 @@ import java.util.Calendar;
  * Created by Arek on 2016-12-03.
  */
 
-public class SongPlayer extends MediaPlayer {
+public class
+SongPlayer extends MediaPlayer {
     private String songPath;
     private MainActivity mainActivity;
     private String durationTimeCorrectFormat;

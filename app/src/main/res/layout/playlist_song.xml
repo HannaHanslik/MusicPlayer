@@ -7,22 +7,32 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/songPerformer"
-            android:layout_width="match_parent"
+            android:layout_width="124dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:layout_weight="1" />
+            android:layout_weight="0.32" />
 
         <TextView
             android:id="@+id/songTitle"
-            android:layout_width="match_parent"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textSize="14sp"
-            android:layout_weight="1" />
+            android:layout_weight="0.64" />
+
+        <Button
+            android:layout_width="32dp"
+            android:layout_height="34dp"
+            android:id="@+id/button"
+            android:background="@android:drawable/ic_delete"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:onClick="buttonDelClick" />
 
     </LinearLayout>
 

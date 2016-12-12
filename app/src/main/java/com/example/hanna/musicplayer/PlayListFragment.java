@@ -1,6 +1,7 @@
 package com.example.hanna.musicplayer;
 
 import android.app.LauncherActivity;
+import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -33,6 +35,22 @@ public class PlayListFragment extends ListFragment {
     private DeviceSongs deviceSongs;
     private SongPlayer songPlayer;
     private int currPlaySongID;
+    ListFragment.OnListSendListener mCallback;
+
+    public interface OnListSendListener{
+        void onListSend(ArrayList<Song> playlist);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallback = (ListFragment.OnListSendListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Interface playlist send exception");
+        }
+    }
 
     public PlayListFragment() {
     }
@@ -50,14 +68,13 @@ public class PlayListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.playlist_fragment, container, false);
+
         songs = ((MainActivity)getActivity()).getPlaylist();
 
-        //getSongsFromBoundle();
-        if(songs!= null){
-            SongAdapter songAdt = new SongAdapter(getActivity(), songs ,Type.PLAYLIST);
+        if(songs!= null) {
+            SongAdapter songAdt = new SongAdapter(getActivity(), songs, Type.PLAYLIST);
             setListAdapter(songAdt);
         }
-
 
         songPlayer = new SongPlayer((MainActivity)getActivity());
 
@@ -89,14 +106,11 @@ public class PlayListFragment extends ListFragment {
         return rootView;
     }
 
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        // Make sure that we are currently visible
         if (this.isVisible()) {
-            // If we are becoming invisible, then...
             if (isVisibleToUser) {
                 songs = ((MainActivity)getActivity()).getPlaylist();
 
@@ -181,18 +195,64 @@ public class PlayListFragment extends ListFragment {
         songPlayer.setButtonsNextAndPrev();
     }
 
-    public void playNextSong(View v) { songPlayer.nextSong(); }
-
-    public void playPrevSong(View v) { songPlayer.prevSong();}
-
-    public void buttonDelClick(View v){
-        //Toast.makeText(getActivity(),"DEL",Toast.LENGTH_LONG).show();
+    public void playNextSong(View v) {
+        if(songs.size()>0)
+            songPlayer.nextSong();
     }
+
+    public void playPrevSong(View v) {
+        if(songs.size()>0)
+            songPlayer.prevSong();
+    }
+
+    public void buttonDelClick(View v) {
+
+        String title = ((TextView) ((LinearLayout) v.getParent()).findViewById(R.id.songTitle)).getText().toString();
+        int deletedSongID=0;
+        
+        ArrayList<Song> newSongs = new ArrayList<>();
+        int i =0;
+        for (Song song : songs) {
+            if (song.getTitle() != title) {
+                newSongs.add(song);
+                i++;
+            }
+            else{
+                deletedSongID = i++;
+            }
+        }
+
+       if (songs.get(currPlaySongID).getTitle()==title) {
+            songPlayer.stop();
+            currPlaySongID = 0;
+        }
+
+        if(currPlaySongID > deletedSongID)
+            currPlaySongID--;
+
+        songs = newSongs;
+
+        if (songs.size() == 0 ) {
+            songPlayer  = new SongPlayer((MainActivity) getActivity());
+        }
+        else if(!songPlayer.isPlaying() ){
+            songPlayer.setSong(songs.get(currPlaySongID).getUrl());
+            songPlayer.stop();
+        }
+
+        SongAdapter songAdt = new SongAdapter(getActivity(), songs, Type.PLAYLIST);
+        setListAdapter(songAdt);
+        mCallback.onListSend(songs);
+
+    }
+
 
     @Override
     public void onDestroy(){
         songPlayer.release();
-        songPlayer.destroyCallback();
+        //songPlayer.destroyCallback();
         super.onDestroy();
     }
+
+
 }

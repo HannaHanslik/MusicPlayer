@@ -2,13 +2,16 @@ package com.example.hanna.musicplayer;
 
 
 import android.app.Activity;
+import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +29,8 @@ public class ListFragment extends android.support.v4.app.ListFragment {
     private ArrayList<Song> selectedSongs;
     private ViewGroup rootView;
     private DeviceSongs deviceSongs;
-
     OnListSendListener mCallback;
+    SongAdapter songAdt;
 
     public interface OnListSendListener{
         void onListSend(ArrayList<Song> playlist);
@@ -46,6 +49,7 @@ public class ListFragment extends android.support.v4.app.ListFragment {
 
 
     public ListFragment() {
+
     }
 
     /**
@@ -62,7 +66,9 @@ public class ListFragment extends android.support.v4.app.ListFragment {
                              Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.list_fragment, container, false);
         deviceSongs = new DeviceSongs(getActivity());
-        selectedSongs =  new ArrayList<Song>();
+        selectedSongs =  ((MainActivity)getActivity()).getPlaylist();
+        if(selectedSongs == null)
+            selectedSongs = new ArrayList<>();
         return rootView;
     }
 
@@ -71,7 +77,7 @@ public class ListFragment extends android.support.v4.app.ListFragment {
         super.onResume();
         try {
             songs = deviceSongs.ListAllSongs();
-            SongAdapter songAdt = new SongAdapter(getActivity(), songs, Type.LIST);
+            songAdt = new SongAdapter(getActivity(), songs, Type.LIST);
             setListAdapter(songAdt);
         }
         catch (Exception ex)
@@ -82,19 +88,29 @@ public class ListFragment extends android.support.v4.app.ListFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+
         if (this.isVisible()) {
-            if (!isVisibleToUser) {
-                mCallback.onListSend(selectedSongs);
-                //Toast.makeText(getActivity(), "SEND",Toast.LENGTH_LONG).show();
+            if (isVisibleToUser) {
+                selectedSongs = ((MainActivity)getActivity()).getPlaylist();
             }
         }
     }
 
-    public void onListItemClick(ListView l, View view, int position, long id){
-        selectedSongs.add(songs.get(position));
+    public void onListItemClick(ListView parent, View view, int position,long arg3) {
         ViewGroup viewg=(ViewGroup)view;
         TextView tv=(TextView)viewg.findViewById(R.id.songTitle);
-        Toast.makeText(getActivity(), "Add to playlist " + tv.getText().toString(),Toast.LENGTH_LONG).show();
+
+        if(!selectedSongs.contains(songs.get(position))){
+            selectedSongs.add(songs.get(position));
+            Toast.makeText(getActivity(), "Add to playlist " + tv.getText().toString(),Toast.LENGTH_SHORT).show();
+            mCallback.onListSend(selectedSongs);
+        }
+
+        else {
+            Toast.makeText(getActivity(),  tv.getText().toString()+ " exists on playlist",Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
 
